@@ -25,3 +25,7 @@ http://3.142.189.48:5000/students/Zhejian%20Jin
 
 ......or any group numbers name 
 
+#### How to run in EC2:
+
+`python3 app.py`
+
