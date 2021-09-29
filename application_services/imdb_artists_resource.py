@@ -18,5 +18,5 @@ class IMDBArtistResource(BaseRDBApplicationResource):
     @classmethod
     def get_by_name_prefix(cls, name_prefix):
         res = RDBService.get_by_prefix("IMDBFixed", "name_basics",
-                                      "primaryName", name_prefix)
+                                      "last_name", name_prefix)
         return res

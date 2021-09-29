@@ -23,7 +23,7 @@ def get_db_info():
         }
     else:
         db_info = {
-            "host": "localhost",
+            "host": "e6156-db.cm1wbnh1ss6q.us-east-2.rds.amazonaws.com",
             "user": "admin",
             "password": "Abc!1234567890",
             "cursorclass": pymysql.cursors.DictCursor
