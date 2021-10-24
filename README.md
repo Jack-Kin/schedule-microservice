@@ -1,31 +1,34 @@
-# demo-flask
+# schedule-microservice
 
+## Docker Configuration
 
+Docker installation on AWS:
 
-#### Status Report
+https://docs.aws.amazon.com/AmazonECS/latest/developerguide/docker-basics.html
 
-https://docs.google.com/document/d/1FH8R68dDC0DRArvTU1_IS1KUkcLb7MvPWTSeM5tA-Bg/edit#heading=h.zf568v8gwe4n
+Dockerfile:
 
-#### To Access the AWS MySQL db:
+```dockerfile
+# syntax=docker/dockerfile:1
 
-`mysql -h e6156-db.cm1wbnh1ss6q.us-east-2.rds.amazonaws.com -P 3306 -u admin -p` 
+FROM python:3.8-slim-buster
 
-#### To Access the AWS EC2 instance:
-`ssh -i "404NotFound-EC2-test-keypair.pem" ec2-user@ec2-3-142-189-48.us-east-2.compute.amazonaws.com`
+WORKDIR /app
 
-#### EC2 Public IP addr:
+COPY requirements.txt requirements.txt
+RUN pip3 install -r requirements.txt
 
-`3.142.189.48`
+COPY . .
 
-#### Test Cases:
+CMD [ "python3", "./app.py", "--host=0.0.0.0:5003"]
+```
 
-http://3.142.189.48:5000/imdb/artists/Gogh
+Build docker image
+```bash
+docker build --tag schedule-test .
+```
 
-http://3.142.189.48:5000/students/Zhejian%20Jin
-
-......or any group numbers name 
-
-#### How to run in EC2:
-
-`python3 app.py`
-
+Run image as container
+```bash
+docker run --publish 5003:5003 schedule-test
+```
