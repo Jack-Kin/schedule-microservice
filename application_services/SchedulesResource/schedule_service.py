@@ -29,3 +29,12 @@ class ScheduleResource(BaseRDBApplicationResource):
     def create_schedule(cls, schedule_data):
         res = d_service.RDBService.create("hw1_db", "schedule", schedule_data)
         return res
+
+    @classmethod
+    def delete(cls, scheduleId):
+        res = d_service.RDBService.delete("hw1_db", "schedule", scheduleId)
+        return res
+
+    @classmethod
+    def update(cls, scheduleId, row):
+        res = d_service.RDBService.update("hw1_db", "schedule", scheduleId, row)
