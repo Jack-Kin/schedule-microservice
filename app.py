@@ -12,6 +12,8 @@ from datetime import datetime
 from application_services.SchedulesResource.schedule_service import ScheduleResource
 from database_services.RDBService import RDBService as RDBService
 
+from middleware import security
+
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -24,18 +26,27 @@ os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE'] = '1'
 
 app.secret_key = "supersekrit"
 blueprint = make_github_blueprint(
-    client_id="8a3ff99e6c9a6b5f5bec",
-    client_secret="5a762ce0134480dcab9068749101da35fa8c78b7",
+    client_id="1e07fdba2f13655f9965",
+    client_secret="7f2ae024d0b4efcc5fa95bdd8412f542bb5b5907",
 )
 app.register_blueprint(blueprint, url_prefix="/login")
 
+
+@app.before_request
+def before_request_fun():
+    print("This is before request")
+    check_login = security.Secure()
+    result = check_login.security_check(request, github, blueprint)
+    print("login_result: ", result)
+    if not result:
+        print("im here")
+        return redirect(url_for("github.login"))
+
+
 @app.route("/")
 def index():
-    if not github.authorized:
-        return redirect(url_for("github.login"))
-    resp = github.get("/user")
-    assert resp.ok
-    return "You are @{login} on GitHub".format(login=resp.json()["login"])
+    return "You are logged in on GitHub"
+
 
 @app.route("/health", methods=["GET"])
 def health_check():
