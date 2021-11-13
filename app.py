@@ -1,5 +1,9 @@
-from flask import Flask, Response, request
+import os
+
+from flask import Flask, Response, request, redirect, url_for
 from flask_cors import CORS
+# from flask_dance.contrib.google import make_google_blueprint, google
+from flask_dance.contrib.github import make_github_blueprint, github
 import json
 import logging
 
@@ -15,11 +19,23 @@ logger.setLevel(logging.INFO)
 app = Flask(__name__)
 CORS(app)
 
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE'] = '1'
 
-@app.route('/')
-def hello_schedule():
-    return '<u>Hello this is the schedule microservice!</u>'
+app.secret_key = "supersekrit"
+blueprint = make_github_blueprint(
+    client_id="8a3ff99e6c9a6b5f5bec",
+    client_secret="5a762ce0134480dcab9068749101da35fa8c78b7",
+)
+app.register_blueprint(blueprint, url_prefix="/login")
 
+@app.route("/")
+def index():
+    if not github.authorized:
+        return redirect(url_for("github.login"))
+    resp = github.get("/user")
+    assert resp.ok
+    return "You are @{login} on GitHub".format(login=resp.json()["login"])
 
 @app.route("/health", methods=["GET"])
 def health_check():
@@ -76,4 +92,4 @@ def get_by_prefix(db_schema, table_name, column_name, prefix):
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5003)
+    app.run(host="0.0.0.0", port=5000)
