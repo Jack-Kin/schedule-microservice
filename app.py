@@ -26,26 +26,33 @@ os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE'] = '1'
 
 app.secret_key = "supersekrit"
 blueprint = make_github_blueprint(
-    client_id="1e07fdba2f13655f9965",
-    client_secret="7f2ae024d0b4efcc5fa95bdd8412f542bb5b5907",
+    client_id="60427c94b5d59a5b7158",
+    client_secret="81d41d4ac72f3c7fc7bbe4053d83a49e3c08b7af",
+    scope=["profile", "email"]
 )
 app.register_blueprint(blueprint, url_prefix="/login")
 
+g_bp = app.blueprints.get("google")
 
 @app.before_request
 def before_request_fun():
-    print("This is before request")
+    print("Before request is running!")
     check_login = security.Secure()
-    result = check_login.security_check(request, github, blueprint)
+    result = check_login.security_check_github(request, github, g_bp)
     print("login_result: ", result)
     if not result:
-        print("im here")
+        print("Going to redirect")
         return redirect(url_for("github.login"))
 
 
 @app.route("/")
-def index():
-    return "You are logged in on GitHub"
+def hello_world():
+    return "Hello World"
+
+
+@app.route("/login/github")
+def google_login():
+    return "You are logged in on Github"
 
 
 @app.route("/health", methods=["GET"])
