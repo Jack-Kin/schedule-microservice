@@ -37,12 +37,12 @@ g_bp = app.blueprints.get("google")
 @app.before_request
 def before_request_fun():
     print("Before request is running!")
-    check_login = security.Secure()
-    result = check_login.security_check_github(request, github, g_bp)
-    print("login_result: ", result)
-    if not result:
-        print("Going to redirect")
-        return redirect(url_for("github.login"))
+    # check_login = security.Secure()
+    # result = check_login.security_check_github(request, github, g_bp)
+    # print("login_result: ", result)
+    # if not result:
+    #     print("Going to redirect")
+    #     return redirect(url_for("github.login"))
 
 
 @app.route("/")
